@@ -3,14 +3,15 @@ import express from 'express';
 import morgan from 'morgan';
 import path from 'path';
 import chalk from 'chalk';
-import bookRouter from './routes/bookRoutes.mjs';
+import navItems from './data/navItems.mjs';
+import bookRouter from './routers/bookRouter.mjs';
+import homeRouter from './routers/homeRouter.mjs';
 
 const debug = d('app');
 
 const app = express();
 const port = process.env.PORT || 3000;
-
-
+const title = 'My Library';
 
 // Logging Util
 app.use(morgan('tiny')); // combined shows more info
@@ -27,22 +28,8 @@ app.set('views', './src/views');
 app.set('view engine', 'ejs');
 
 // Routes
-app.use('/books', bookRouter);
-
-app.get('/', (req, res) => {
-  // res.sendFile(path.join(process.cwd(), 'views/index.html'));
-  res.render(
-    'index',
-    {
-      title: 'My Library',
-      nav: [
-        { link: '/books', title: 'Books' },
-        { link: '/authors', title: 'Authors' }
-      ],
-      list: ['a', 'b']
-    }
-  );
-});
+app.use('/', homeRouter(title, navItems));
+app.use('/books', bookRouter(title, navItems));
 
 app.listen(port, () => {
   debug(`Listening at Port ${chalk.green(port)}`);
