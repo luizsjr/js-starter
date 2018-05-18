@@ -3,11 +3,14 @@ import express from 'express';
 import morgan from 'morgan';
 import path from 'path';
 import chalk from 'chalk';
+import bookRouter from './routes/bookRoutes.mjs';
 
 const debug = d('app');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+
 
 // Logging Util
 app.use(morgan('tiny')); // combined shows more info
@@ -24,9 +27,21 @@ app.set('views', './src/views');
 app.set('view engine', 'ejs');
 
 // Routes
+app.use('/books', bookRouter);
+
 app.get('/', (req, res) => {
   // res.sendFile(path.join(process.cwd(), 'views/index.html'));
-  res.render('index', { title: 'My Library', list: ['a', 'b'] });
+  res.render(
+    'index',
+    {
+      title: 'My Library',
+      nav: [
+        { link: '/books', title: 'Books' },
+        { link: '/authors', title: 'Authors' }
+      ],
+      list: ['a', 'b']
+    }
+  );
 });
 
 app.listen(port, () => {
