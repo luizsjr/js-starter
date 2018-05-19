@@ -6,6 +6,7 @@ import chalk from 'chalk';
 import navItems from './data/navItems.mjs';
 import bookRouter from './routers/bookRouter.mjs';
 import homeRouter from './routers/homeRouter.mjs';
+import adminRouter from './routers/adminRouter.mjs';
 
 const debug = d('app');
 
@@ -30,6 +31,7 @@ app.set('view engine', 'ejs');
 // Routes
 app.use('/', homeRouter(title, navItems));
 app.use('/books', bookRouter(title, navItems));
+app.use('/admin', adminRouter(title, navItems));
 
 app.listen(port, () => {
   debug(`Listening at Port ${chalk.green(port)}`);
