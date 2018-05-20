@@ -15,9 +15,10 @@
 
     <!-- Main -->
     <hr>
-    <%if (typeof error !== 'undefined') {%>
-    <h4>Error processing page:</h4>
-    <h5><%=error%></h5>
+    <%if (typeof rd.error !== 'undefined') {%>
+    <h4>The following error occurred while processing your request:</h4>
+    <p></p>
+    <h5><%=rd.error%></h5>
     <%}%>
 
   </div>

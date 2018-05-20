@@ -1,37 +1,34 @@
 import express from 'express';
 import bookService from '../services/bookService.mjs';
-import wrap from '../utils/asyncWrapper.mjs';
+import rdService from '../services/referenceDataService.mjs';
+import wrap from '../common/asyncWrapper.mjs';
 
-function addBookRoutes(router, title, navItems) {
+function addBookRoutes(router) {
   router.route('/')
     .get(wrap(async (req, res) => {
-      res.render(
-        'books',
-        {
-          title,
-          nav: navItems,
-          books: await bookService.listAll()
-        }
-      );
+      const data = await Promise.all([rdService.get(), bookService.listAll()]);
+      const result = {
+        rd: data[0],
+        books: data[1]
+      };
+      res.render('books', result);
     }));
 
   router.route('/:id')
     .get(wrap(async (req, res) => {
       const { id } = req.params;
-      res.render(
-        'book',
-        {
-          title,
-          nav: navItems,
-          book: await bookService.getById(id)
-        }
-      );
+      const data = await Promise.all([rdService.get(), bookService.getById(id)]);
+      const result = {
+        rd: data[0],
+        book: data[1]
+      };
+      res.render('book', result);
     }));
 }
 
-function bookRouter(title, navItems) {
+function bookRouter() {
   const router = express.Router();
-  addBookRoutes(router, title, navItems);
+  addBookRoutes(router);
   return router;
 }
 

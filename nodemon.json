@@ -4,6 +4,8 @@
   "delay": "2500",
   "env": {
     "NODE_ENV": "development",
-    "PORT": 4000
+    "PORT": 4000,
+    "DB_URL": "mongodb+srv://libadmin:t7L19!SckK@cluster-hk7dn.mongodb.net",
+    "DB_NAME": "libraryDb"
   }
 }

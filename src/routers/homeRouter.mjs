@@ -1,23 +1,22 @@
 import express from 'express';
+import rdService from '../services/referenceDataService.mjs';
+import wrap from '../common/asyncWrapper.mjs';
 
-function addHomeRoute(router, title, navItems) {
+function addHomeRoute(router) {
   router.route('/')
-    .get((req, res) => {
+    .get(wrap(async (req, res) => {
       res.render(
         'index',
         {
-          title,
-          nav: navItems
+          rd: await rdService.get()
         }
       );
-    });
+    }));
 }
 
-function homeRouter(title, navItems) {
+function homeRouter() {
   const router = express.Router();
-
-  addHomeRoute(router, title, navItems);
-
+  addHomeRoute(router);
   return router;
 }
 

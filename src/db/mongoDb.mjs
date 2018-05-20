@@ -5,21 +5,26 @@ const debug = d('app:mongoDb');
 
 const mongoDb = {
 
-  async connect(url) {
+  async connect() {
     try {
-      mongoDb.client = await MongoClient.connect(url);
+      const url = process.env.DB_URL;
+      if (!url) { throw new Error('URL Connection not set'); }
+      mongoDb.client = await MongoClient.connect(url, { useNewUrlParser: true });
       debug('Connected to the DB server');
     } catch (err) {
       debug(`Error connecting to the DB Server: ${err.stack}`);
-      throw err;
+      process.exit(1); // Stop the server as connect is called before starting the routes
     }
   },
 
-  db(dbName) {
-    if (mongoDb.client) {
-      return mongoDb.client.db(dbName);
+  db() {
+    const dbName = process.env.DB_NAME;
+    if (!dbName) {
+      throw new Error('DB name not set');
+    } else if (!mongoDb.client) {
+      throw new Error('Not Connected to any database');
     }
-    throw new Error('Not Connected to any database');
+    return mongoDb.client.db(dbName);
   },
 
   objectID(id) {

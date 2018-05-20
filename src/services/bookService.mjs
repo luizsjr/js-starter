@@ -1,13 +1,12 @@
 import mongoDb from '../db/mongoDb.mjs';
 import books from '../data/books.mjs';
 
-const dbName = 'libraryDb';
 const collectionName = 'books';
 
 const bookService = {
 
   collection() {
-    return mongoDb.db(dbName).collection(collectionName);
+    return mongoDb.db().collection(collectionName);
   },
 
   addAll() {

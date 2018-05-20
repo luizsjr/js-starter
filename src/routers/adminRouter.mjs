@@ -1,50 +1,38 @@
-import d from 'debug';
 import express from 'express';
+import wrap from '../common/asyncWrapper.mjs';
 import bookService from '../services/bookService.mjs';
-
-const debug = d('app:adminRouter');
-
-function handleError(res, errorMessage) {
-  debug(errorMessage);
-  res.status(500).send(errorMessage);
-}
+import referenceDataService from '../services/referenceDataService.mjs';
 
 function addAdminRoutes(router) {
-  router.route('/addBooks')
-    .get((req, res) => {
-      (async function addBooks() {
-        try {
-          const response = await bookService.addAll();
-          res.json(response);
-        } catch (err) {
-          handleError(res, `Error inserting books in the DB Server: ${err.stack}`);
-        }
-      }());
-    });
+  router.route('/reloadRD')
+    .get(wrap(async (req, res) => {
+      const response = await referenceDataService.reload();
+      res.json(response);
+    }));
+
+  router.route('/showRD')
+    .get(wrap(async (req, res) => {
+      const response = await referenceDataService.get();
+      res.json(response);
+    }));
+
+  router.route('/loadBooks')
+    .get(wrap(async (req, res) => {
+      const response = await bookService.addAll();
+      res.json(response);
+    }));
 
   router.route('/listBooks')
-    .get((req, res) => {
-      (async function listBooks() {
-        try {
-          const response = await bookService.listAll();
-          res.json(response);
-        } catch (err) {
-          handleError(res, `Error retrieving books from the DB Server: ${err.stack}`);
-        }
-      }());
-    });
+    .get(wrap(async (req, res) => {
+      const response = await bookService.listAll();
+      res.json(response);
+    }));
 
   router.route('/deleteBooks')
-    .get((req, res) => {
-      (async function deleteBooks() {
-        try {
-          const response = await bookService.deleteAll();
-          res.json(response);
-        } catch (err) {
-          handleError(res, `Error deleting books from the DB Server: ${err.stack}`);
-        }
-      }());
-    });
+    .get(wrap(async (req, res) => {
+      const response = await bookService.deleteAll();
+      res.json(response);
+    }));
 }
 
 function adminRouter() {

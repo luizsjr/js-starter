@@ -3,27 +3,17 @@ import express from 'express';
 import morgan from 'morgan';
 import path from 'path';
 import chalk from 'chalk';
-import navItems from './data/navItems.mjs';
 import mongoDb from './db/mongoDb.mjs';
 import bookRouter from './routers/bookRouter.mjs';
 import homeRouter from './routers/homeRouter.mjs';
 import adminRouter from './routers/adminRouter.mjs';
+import errorHandler from './common/errorHandler.mjs';
 
 const debug = d('app');
 
 const port = process.env.PORT || 3000;
-const title = 'My Library';
-const dbUrl = 'mongodb+srv://libadmin:Library0!@cluster-hk7dn.mongodb.net';
 
 const app = express();
-
-function errorHandler(err, req, res, next) { // eslint-disable-line no-unused-vars
-  debug(err);
-  res.status(500);
-  res.location('/');
-  res.render('index', { title, nav: navItems, error: err.stack });
-  // res.send({ error: err.stack });
-}
 
 (async function init() {
   // Logging Util
@@ -41,12 +31,11 @@ function errorHandler(err, req, res, next) { // eslint-disable-line no-unused-va
   // app.set('view engine', 'pug');
 
   // Open DB Connection
-  await mongoDb.connect(dbUrl);
+  await mongoDb.connect();
 
   // Start Routes
-  app.use('/', homeRouter(title, navItems));
-  // app.use('/books', wrapAsync(bookRouter(title, navItems)));
-  app.use('/books', bookRouter(title, navItems));
+  app.use('/', homeRouter());
+  app.use('/books', bookRouter());
   app.use('/admin', adminRouter());
   app.use(errorHandler);
 
