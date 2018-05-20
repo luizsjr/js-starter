@@ -15,6 +15,10 @@
 
     <!-- Main -->
     <hr>
+    <%if (typeof error !== 'undefined') {%>
+    <h4>Error processing page:</h4>
+    <h5><%=error%></h5>
+    <%}%>
 
   </div>
 

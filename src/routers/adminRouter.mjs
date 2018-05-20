@@ -1,38 +1,55 @@
 import d from 'debug';
 import express from 'express';
-import MongoClient from 'mongodb';
-import books from '../data/books.mjs';
+import bookService from '../services/bookService.mjs';
 
-const debug = d('app:AdminRouter');
+const debug = d('app:adminRouter');
 
-function addAdminRoute(router, title, navItems) {
-  router.route('/')
+function handleError(res, errorMessage) {
+  debug(errorMessage);
+  res.status(500).send(errorMessage);
+}
+
+function addAdminRoutes(router) {
+  router.route('/addBooks')
     .get((req, res) => {
-      const url = 'mongodb+srv://libadmin:<PASSWORD>@cluster-hk7dn.mongodb.net/test?retryWrites=true';
-      const dbName = 'libraryDb';
-
-      (async function mongo() {
-        let client;
+      (async function addBooks() {
         try {
-          client = await MongoClient.connect(url);
-          debug('Connected to the DB server');
-
-          const db = client.db(dbName);
-          const response = await db.collection('books').insertMany(books);
+          const response = await bookService.addAll();
           res.json(response);
         } catch (err) {
-          debug(`Error connecting to the DB Server: ${err.stack}`);
+          handleError(res, `Error inserting books in the DB Server: ${err.stack}`);
         }
-        client.close();
+      }());
+    });
+
+  router.route('/listBooks')
+    .get((req, res) => {
+      (async function listBooks() {
+        try {
+          const response = await bookService.listAll();
+          res.json(response);
+        } catch (err) {
+          handleError(res, `Error retrieving books from the DB Server: ${err.stack}`);
+        }
+      }());
+    });
+
+  router.route('/deleteBooks')
+    .get((req, res) => {
+      (async function deleteBooks() {
+        try {
+          const response = await bookService.deleteAll();
+          res.json(response);
+        } catch (err) {
+          handleError(res, `Error deleting books from the DB Server: ${err.stack}`);
+        }
       }());
     });
 }
 
-function adminRouter(title, navItems) {
+function adminRouter() {
   const router = express.Router();
-
-  addAdminRoute(router, title, navItems);
-
+  addAdminRoutes(router);
   return router;
 }
 

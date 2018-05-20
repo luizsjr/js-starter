@@ -1,44 +1,37 @@
 import express from 'express';
-import books from '../data/books.mjs';
+import bookService from '../services/bookService.mjs';
+import wrap from '../utils/asyncWrapper.mjs';
 
-function addBookListRoute(router, title, navItems) {
+function addBookRoutes(router, title, navItems) {
   router.route('/')
-    .get((req, res) => {
+    .get(wrap(async (req, res) => {
       res.render(
         'books',
         {
           title,
           nav: navItems,
-          books
+          books: await bookService.listAll()
         }
       );
-    });
-}
+    }));
 
-function addSingleBookRoute(router, title, navItems) {
   router.route('/:id')
-    .get((req, res) => {
+    .get(wrap(async (req, res) => {
       const { id } = req.params;
-      const book = books[id];
-      book.id = id;
-
       res.render(
         'book',
         {
           title,
           nav: navItems,
-          book
+          book: await bookService.getById(id)
         }
       );
-    });
+    }));
 }
 
 function bookRouter(title, navItems) {
   const router = express.Router();
-
-  addBookListRoute(router, title, navItems);
-  addSingleBookRoute(router, title, navItems);
-
+  addBookRoutes(router, title, navItems);
   return router;
 }
 
