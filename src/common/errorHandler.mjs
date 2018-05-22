@@ -6,7 +6,7 @@ function errorHandler(err, req, res, next) { // eslint-disable-line no-unused-va
   debug(err);
   res.status(500);
   res.location('/');
-  res.render('index', {
+  res.render('error', {
     rd: {
       title: 'Something went wrong...',
       subTitle: '',

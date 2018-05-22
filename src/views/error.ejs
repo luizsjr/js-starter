@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include partials/head.ejs %>
+</head>
+
+<body>
+  <div class="container">
+    <!--Navigation Bar -->
+    <% include partials/navbar.ejs %>
+
+    <!-- Header -->
+    <% include partials/header.ejs %>
+
+    <!-- Main -->
+    <hr>
+    <h4>The following error occurred while processing your request:</h4>
+    <p></p>
+    <h5><%=rd.error%></h5>
+
+  </div>
+
+  <!-- Footer -->
+  <% include partials/footer.ejs %>
+
+</body>
+</html>

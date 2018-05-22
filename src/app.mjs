@@ -1,12 +1,14 @@
 import d from 'debug';
 import express from 'express';
 import morgan from 'morgan';
+import bodyParser from 'body-parser';
 import path from 'path';
 import chalk from 'chalk';
 import mongoDb from './db/mongoDb.mjs';
 import bookRouter from './routers/bookRouter.mjs';
 import homeRouter from './routers/homeRouter.mjs';
 import adminRouter from './routers/adminRouter.mjs';
+import authRouter from './routers/authRouter.mjs';
 import errorHandler from './common/errorHandler.mjs';
 
 const debug = d('app');
@@ -18,6 +20,10 @@ const app = express();
 (async function init() {
   // Logging Util
   app.use(morgan('tiny')); // 'combined' shows more info
+
+  // Body Parser
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
 
   // Static Content
   app.use(express.static(path.join(process.cwd(), '/public')));
@@ -37,6 +43,7 @@ const app = express();
   app.use('/', homeRouter());
   app.use('/books', bookRouter());
   app.use('/admin', adminRouter());
+  app.use('/auth', authRouter());
   app.use(errorHandler);
 
   app.listen(port, () => {
