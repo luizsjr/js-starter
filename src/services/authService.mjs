@@ -1,6 +1,9 @@
+import d from 'debug';
 import mongoDb from '../db/mongoDb.mjs';
 
-const collectionName = 'books';
+const debug = d('app:authService');
+
+const collectionName = 'users';
 
 const authService = {
 
@@ -8,21 +11,22 @@ const authService = {
     return mongoDb.db().collection(collectionName);
   },
 
-  addAll() {
-    return authService.collection().insertMany(books);
-  },
-
-  listAll() {
-    return authService.collection().find().toArray();
+  async create(user) {
+    debug(`Creating User ${user.username}`);
+    const existingUser = await authService.collection().findOne({ username: user.username });
+    debug(existingUser);
+    if (!existingUser) {
+      const results = await authService.collection().insertOne(user);
+      return results.ops[0];
+    }
+    const error = `The username ${user.username} already exists in the database`;
+    debug(error);
+    return { error };
   },
 
   getById(id) {
     return authService.collection().findOne({ _id: mongoDb.objectID(id) });
   },
-
-  deleteAll() {
-    return authService.collection().deleteMany();
-  }
 };
 
 export default authService;

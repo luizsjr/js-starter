@@ -14,26 +14,7 @@
     <% include partials/header.ejs %>
 
     <!-- Main -->
-    <form name="signUpForm" action="/auth/signUp" method="post">
-      <div class="row px-2 py-3">
-        <h4>Sign Up!</h4>
-      </div>
-      <div class="form-group row px-2 py-3">
-        <label for="username" class="col-lg-1 col-sm-2 col-form-label">Username</label>
-        <div class="col-lg-3 col-md-5 col-sm-7">
-          <input type="text" class="form-control" name="username" id="username">
-        </div>
-      </div>
-      <div class="form-group row px-2 py-3">
-        <label for="password" class="col-lg-1 col-sm-2 col-form-label">Password</label>
-        <div class="col-lg-3 col-md-5 col-sm-7">
-          <input type="text" class="form-control" name="password" id="password">
-        </div>
-      </div>
-      <div class="row px-4">
-        <button type="submit" class="btn btn-dark">Sign Up</button>
-      </div>
-    </form>
+    <% include partials/signup.ejs %>
     <hr>
   </div>
 
